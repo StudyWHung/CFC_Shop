@@ -1,0 +1,29 @@
+## Visual Studio & VS Code cache
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build outputs (bin / obj)
+[Bb]in/
+[Oo]bj/
+out/
+publish/
+
+## User-specific / Local settings
+appsettings.Development.json
+appsettings.Local.json
+
+## OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+## Node / FrontEnd (cho tương lai khi dùng React/Vue/Vite)
+node_modules/
+dist/
+.npm
