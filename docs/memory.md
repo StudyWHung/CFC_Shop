@@ -21,3 +21,10 @@
 - Khởi tạo Git repository và cấu hình Remote Origin (`https://github.com/StudyWHung/CFC_Shop.git`).
 - Tạo hệ thống tài liệu quản lý dự án trong `docs/`: `docs/rules.md`, `docs/tech_stack.md`, `docs/memory.md`.
 
+### 5. Repository Cleanup & Migration Architecture Audit
+- Tạo file `.gitignore` chuẩn ở thư mục gốc để tự động loại bỏ các thư mục rác tự sinh (`.vs/`, `bin/`, `obj/`, `*.user`).
+- Kiểm tra toàn bộ cấu trúc dự án: XÁC NHẬN dự án gọn gàng, chia tầng rõ ràng (`Controllers`, `DTOs`, `Models/Entities`, `Data`), không có file code dư thừa hay lỗi logic.
+- Phân tích chi tiết vai trò của 5 file trong `Migrations/` (`InitialCreate`, `AddCodesAndDescriptions`, `ModelSnapshot`).
+- Đồng bộ mượt mà mốc thay đổi lên Remote Repository GitHub (`main` branch) bằng `git push`.
+
+
