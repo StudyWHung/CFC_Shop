@@ -97,13 +97,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Navigation Links & DROPDOWN DANH MỤC */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link
-              href="/"
-              className="text-sm font-semibold text-gray-200 hover:text-[#dba111] transition-colors py-2"
-            >
-              Trang Chủ
-            </Link>
-
             {/* DROPDOWN 1: Dropdown Danh mục */}
             <div className="relative" ref={categoryDropdownRef}>
               <button
@@ -277,14 +270,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               />
               <Search className="w-4 h-4 text-blue-300 absolute left-3 top-2.5" />
             </div>
-
-            <Link
-              href="/"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-sm font-semibold text-gray-200 hover:text-[#dba111] py-1.5"
-            >
-              Trang Chủ
-            </Link>
 
             {isAdmin && (
               <Link

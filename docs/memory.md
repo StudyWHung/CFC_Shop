@@ -120,5 +120,6 @@
 ### 3. Đồng Bộ Tồn Kho Thời Gian Thực (Real-Time Stock Sync)
 - Nâng cấp `CartDrawer.tsx`: Bắt buộc đăng nhập trước khi tạo đơn (tự mở `AuthModal` nếu chưa đăng nhập), có spinner loading và cảnh báo lỗi tồn kho trực quan.
 - Tích hợp custom event `cfc_order_completed` tự động kích hoạt `loadProducts()` trên `HomePage` và trang Admin CRUD để badge *"Còn X chiếc"* giảm ngay lập tức sau khi mua hàng.
+- Xóa bỏ nút "Trang Chủ" dư thừa trên thanh Navbar (cả Desktop và Mobile) vì logo Chelsea FC đã đảm nhận điều hướng về trang chủ.
 
 
