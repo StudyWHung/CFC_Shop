@@ -271,7 +271,7 @@ export const CartDrawer: React.FC = () => {
 
               <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-400 text-center">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Thanh toán an toàn • Khấu trừ trực tiếp CSDL PostgreSQL</span>
+                <span>Thanh toán an toàn • 100% Chính hãng Chelsea FC</span>
               </div>
             </div>
           )}

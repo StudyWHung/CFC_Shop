@@ -203,11 +203,6 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-400 text-center">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>Đơn hàng đã được lưu trữ an toàn trong CSDL PostgreSQL</span>
-          </div>
-
           {/* Action Button */}
           <button
             onClick={handleAction}
