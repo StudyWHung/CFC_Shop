@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
     setUser(userData);
 
-    // Lưu vào Local Storage
+    // Lưu vào LocalStorage
     localStorage.setItem("cfc_token", authData.token);
     localStorage.setItem("cfc_user", JSON.stringify(userData));
   };
