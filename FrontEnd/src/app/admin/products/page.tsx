@@ -79,6 +79,19 @@ export default function AdminProductsPage() {
     }
   }, [selectedCategoryId, searchQuery, isAdmin]);
 
+  // Tự động làm mới danh sách CRUD khi có đơn hàng mới
+  useEffect(() => {
+    const handleOrderCompleted = () => {
+      if (isAdmin) {
+        loadData();
+      }
+    };
+    window.addEventListener("cfc_order_completed", handleOrderCompleted);
+    return () => {
+      window.removeEventListener("cfc_order_completed", handleOrderCompleted);
+    };
+  }, [isAdmin, selectedCategoryId, searchQuery]);
+
   // 2. Thống kê nhanh (Cards Statistics)
   const stats = useMemo(() => {
     const totalCount = products.length;

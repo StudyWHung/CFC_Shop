@@ -54,6 +54,17 @@ export default function HomePage() {
     loadProducts();
   }, [selectedCategoryId, searchQuery]);
 
+  // Tự động làm mới danh sách sản phẩm khi có đơn hàng đặt thành công
+  useEffect(() => {
+    const handleOrderCompleted = () => {
+      loadProducts();
+    };
+    window.addEventListener("cfc_order_completed", handleOrderCompleted);
+    return () => {
+      window.removeEventListener("cfc_order_completed", handleOrderCompleted);
+    };
+  }, [selectedCategoryId, searchQuery]);
+
   // 3. Sắp xếp sản phẩm trên Client bằng useMemo
   const sortedProducts = useMemo(() => {
     const list = [...products];

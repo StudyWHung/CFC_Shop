@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { X, Trash2, ShoppingBag, Plus, Minus, ArrowRight, ShieldCheck } from "lucide-react";
+import { X, Trash2, ShoppingBag, Plus, Minus, ArrowRight, ShieldCheck, Loader2, AlertCircle, LogIn } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { createOrderApi } from "@/lib/api";
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -15,33 +17,81 @@ export const CartDrawer: React.FC = () => {
     removeFromCart,
     updateQuantity,
     clearCart,
+    openSuccessModal,
   } = useCart();
+
+  const { user, openAuthModal } = useAuth();
+  const [isPlacingOrder, setIsPlacingOrder] = useState<boolean>(false);
+  const [orderError, setOrderError] = useState<string | null>(null);
 
   if (!isCartOpen) return null;
 
   const defaultImage = "/images/products/home-kit.jpg";
 
+  const handleCheckout = async () => {
+    setOrderError(null);
+
+    // 1. Nếu chưa đăng nhập -> Mở AuthModal yêu cầu đăng nhập/đăng ký
+    if (!user) {
+      closeCart();
+      openAuthModal();
+      return;
+    }
+
+    if (cartItems.length === 0) return;
+
+    setIsPlacingOrder(true);
+    try {
+      // 2. Gửi request đặt hàng lên Backend API
+      const orderPayload = {
+        items: cartItems.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+        })),
+      };
+
+      const completedOrder = await createOrderApi(orderPayload);
+
+      // 3. Xử lý sau khi đặt hàng thành công
+      clearCart();
+      closeCart();
+      openSuccessModal(completedOrder);
+    } catch (err: any) {
+      console.error("Lỗi khi đặt hàng:", err);
+      const msg =
+        err.response?.data?.message ||
+        "Không thể hoàn tất đơn hàng. Vui lòng kiểm tra lại kết nối mạng hoặc số lượng tồn kho!";
+      setOrderError(msg);
+    } finally {
+      setIsPlacingOrder(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity animate-in fade-in duration-200"
         onClick={closeCart}
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between">
+        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between animate-in slide-in-from-right duration-300">
           
           {/* Drawer Header */}
           <div className="p-6 bg-[#001433] text-white flex items-center justify-between border-b border-[#034694]">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-[#034694] text-[#dba111]">
+              <div className="p-2 rounded-xl bg-[#034694] text-[#dba111]">
                 <ShoppingBag className="w-5 h-5" />
               </div>
               <div>
                 <h2 className="text-lg font-black tracking-tight">Giỏ Hàng Của Bạn</h2>
                 <p className="text-xs text-blue-200">
-                  Lưu trữ tự động trong <span className="font-mono text-[#dba111]">LocalStorage</span> ({totalCount} món)
+                  {user ? (
+                    <span>Khách hàng: <strong className="text-white">{user.fullName}</strong> ({totalCount} món)</span>
+                  ) : (
+                    <span>Đang mua sắm ({totalCount} món)</span>
+                  )}
                 </p>
               </div>
             </div>
@@ -56,6 +106,31 @@ export const CartDrawer: React.FC = () => {
 
           {/* Drawer Item List */}
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            {orderError && (
+              <div className="p-3.5 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-2.5 text-xs text-red-700 font-medium">
+                <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">{orderError}</div>
+              </div>
+            )}
+
+            {!user && cartItems.length > 0 && (
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-between text-xs text-amber-800">
+                <div className="flex items-center gap-2">
+                  <LogIn className="w-4 h-4 text-amber-600" />
+                  <span>Bạn chưa đăng nhập</span>
+                </div>
+                <button
+                  onClick={() => {
+                    closeCart();
+                    openAuthModal();
+                  }}
+                  className="font-bold text-[#034694] hover:underline"
+                >
+                  Đăng nhập ngay
+                </button>
+              </div>
+            )}
+
             {cartItems.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-12">
                 <div className="w-20 h-20 rounded-full bg-blue-50 text-[#034694] flex items-center justify-center">
@@ -102,6 +177,7 @@ export const CartDrawer: React.FC = () => {
                           alt={item.productName}
                           fill
                           className="object-cover"
+                          unoptimized={item.imageUrl?.startsWith("http")}
                         />
                       </div>
 
@@ -171,20 +247,31 @@ export const CartDrawer: React.FC = () => {
               </div>
 
               <button
-                onClick={() => {
-                  alert(`Đơn hàng của bạn trị giá $${totalPrice.toFixed(2)} đang được xử lý! Cảm ơn bạn đã mua hàng tại CFC Shop.`);
-                  clearCart();
-                  closeCart();
-                }}
-                className="w-full bg-[#034694] hover:bg-[#023470] text-[#dba111] font-bold py-3.5 px-4 rounded-xl shadow-lg hover:shadow-blue-900/40 flex items-center justify-center gap-2 transition-all text-sm"
+                onClick={handleCheckout}
+                disabled={isPlacingOrder}
+                className="w-full bg-[#034694] hover:bg-[#023470] text-[#dba111] font-bold py-3.5 px-4 rounded-xl shadow-lg hover:shadow-blue-900/40 flex items-center justify-center gap-2 transition-all text-sm active:scale-95 disabled:opacity-75 disabled:cursor-not-allowed"
               >
-                <span>Tiến Hành Đặt Hàng</span>
-                <ArrowRight className="w-4 h-4" />
+                {isPlacingOrder ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Đang Xử Lý Đơn Hàng...</span>
+                  </>
+                ) : !user ? (
+                  <>
+                    <span>Đăng Nhập Để Đặt Hàng</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                ) : (
+                  <>
+                    <span>Tiến Hành Đặt Hàng</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
               </button>
 
-              <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-400">
+              <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-400 text-center">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Thanh toán an toàn • Dữ liệu lưu trong LocalStorage</span>
+                <span>Thanh toán an toàn • Khấu trừ trực tiếp CSDL PostgreSQL</span>
               </div>
             </div>
           )}

@@ -4,6 +4,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { CartDrawer } from "@/components/CartDrawer";
 import { AuthModal } from "@/components/AuthModal";
+import { GlobalModals } from "@/components/GlobalModals";
 
 export const metadata: Metadata = {
   title: "Chelsea FC Fan Store - Pride of London | Official Kits & Merch",
@@ -27,6 +28,7 @@ export default function RootLayout({
             {children}
             <CartDrawer />
             <AuthModal />
+            <GlobalModals />
           </CartProvider>
         </AuthProvider>
       </body>

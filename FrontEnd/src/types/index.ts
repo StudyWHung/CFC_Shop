@@ -74,3 +74,37 @@ export interface CartItem {
   stockQuantity: number;
   categoryName?: string;
 }
+
+// === ORDER TYPES ===
+export interface CreateOrderItemInput {
+  productId: number;
+  quantity: number;
+}
+
+export interface CreateOrderInput {
+  items: CreateOrderItemInput[];
+  note?: string;
+}
+
+export interface OrderDetailItem {
+  orderDetailId: number;
+  productId: number;
+  productCode: string;
+  productName: string;
+  imageUrl?: string;
+  unitPrice: number;
+  quantity: number;
+  subTotal: number;
+}
+
+export interface OrderResponse {
+  orderId: number;
+  orderCode: string;
+  userId: number;
+  customerName: string;
+  customerEmail: string;
+  orderDate: string;
+  totalAmount: number;
+  status: string;
+  items: OrderDetailItem[];
+}

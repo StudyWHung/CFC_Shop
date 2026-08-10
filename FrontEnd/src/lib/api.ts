@@ -7,6 +7,8 @@ import {
   CreateCategoryInput,
   AuthResponse,
   User,
+  CreateOrderInput,
+  OrderResponse,
 } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
@@ -37,7 +39,6 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 && typeof window !== "undefined") {
-      // Token hết hạn hoặc không hợp lệ
       console.warn("Phiên đăng nhập đã hết hạn.");
     }
     return Promise.reject(error);
@@ -92,5 +93,16 @@ export const registerApi = async (email: string, password: string, fullName: str
 
 export const getProfileApi = async (): Promise<User> => {
   const response = await apiClient.get<User>("/auth/me");
+  return response.data;
+};
+
+// === ORDER APIS ===
+export const createOrderApi = async (data: CreateOrderInput): Promise<OrderResponse> => {
+  const response = await apiClient.post<OrderResponse>("/orders", data);
+  return response.data;
+};
+
+export const getOrdersApi = async (): Promise<OrderResponse[]> => {
+  const response = await apiClient.get<OrderResponse[]>("/orders");
   return response.data;
 };

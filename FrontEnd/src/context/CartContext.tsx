@@ -1,13 +1,15 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Product, CartItem } from "@/types";
+import { Product, CartItem, OrderResponse } from "@/types";
 
 interface CartContextType {
   cartItems: CartItem[];
   totalPrice: number;
   totalCount: number;
   isCartOpen: boolean;
+  completedOrder: OrderResponse | null;
+  isSuccessModalOpen: boolean;
   addToCart: (product: Product, quantity?: number) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
@@ -15,6 +17,8 @@ interface CartContextType {
   openCart: () => void;
   closeCart: () => void;
   toggleCart: () => void;
+  openSuccessModal: (order: OrderResponse) => void;
+  closeSuccessModal: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -23,6 +27,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
+  const [completedOrder, setCompletedOrder] = useState<OrderResponse | null>(null);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
 
   // 1. Đọc dữ liệu Giỏ hàng từ LocalStorage khi khởi động ứng dụng
   useEffect(() => {
@@ -118,6 +124,19 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const closeCart = () => setIsCartOpen(false);
   const toggleCart = () => setIsCartOpen((prev) => !prev);
 
+  const openSuccessModal = (order: OrderResponse) => {
+    setCompletedOrder(order);
+    setIsSuccessModalOpen(true);
+    // Kích hoạt custom event toàn cục để các trang tự động reload sản phẩm/tồn kho
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("cfc_order_completed", { detail: order }));
+    }
+  };
+
+  const closeSuccessModal = () => {
+    setIsSuccessModalOpen(false);
+  };
+
   // Tính tổng tiền & tổng số lượng
   const totalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -129,6 +148,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         totalPrice,
         totalCount,
         isCartOpen,
+        completedOrder,
+        isSuccessModalOpen,
         addToCart,
         removeFromCart,
         updateQuantity,
@@ -136,6 +157,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         openCart,
         closeCart,
         toggleCart,
+        openSuccessModal,
+        closeSuccessModal,
       }}
     >
       {children}

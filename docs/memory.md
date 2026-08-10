@@ -101,3 +101,24 @@
 - Bổ sung thanh 5 nút chọn nhanh ảnh mẫu có sẵn (`Áo Sân Nhà`, `Áo Sân Khách`, `Áo Khoác Anthem`, `Khăn Quàng`, `Cốc Sứ`).
 - Kiểm thử thành công `npm run build` với 0 lỗi và xác minh giao diện trực tiếp trên trình duyệt.
 
+## [2026-08-10] - Hoàn Thành Quy Trình Đặt Hàng (Checkout Flow) & Khấu Trừ Tồn Kho Real-Time
+### 1. Xây Dựng Backend Checkout API & Database Transaction
+- Tạo bộ DTOs: `CreateOrderItemDto`, `CreateOrderDto`, `OrderDetailItemDto`, `OrderResponseDto` trong `DTOs/Orders/`.
+- Tạo `OrdersController` (`POST /api/orders`, `GET /api/orders`, `GET /api/orders/{id}`) được bảo vệ bởi `[Authorize]`:
+  - Trích xuất `UserId` an toàn từ JWT Claims.
+  - Sử dụng PostgreSQL Transaction: Kiểm tra số lượng tồn kho `StockQuantity >= Quantity` trước khi tạo đơn; nếu thiếu sẽ trả về lỗi chi tiết tiếng Việt.
+  - Khấu trừ `StockQuantity` trực tiếp trong bảng `Products`.
+  - Sinh mã đơn hàng chuẩn Chelsea: `CFC-ORD-YYYYMMDD-XXXX`.
+  - Tạo bản ghi mới trong bảng `Orders` và `OrderDetails`.
+
+### 2. Thay Thế Alert Bằng Modal Đặt Hàng Thành Công (`OrderSuccessModal.tsx`)
+- Thiết kế giao diện sang trọng chuẩn Chelsea FC (Royal Blue `#034694`, Deep Navy `#001433`, Gold `#dba111`).
+- Hiển thị mã đơn hàng nổi bật kèm nút **Sao chép (Copy)** 1-click có phản hồi "Đã sao chép!".
+- Tóm tắt thông tin: Tên khách hàng, ngày giờ đặt, phương thức giao hàng miễn phí, danh sách thumbnail sản phẩm kèm số lượng và tổng tiền.
+- Bổ sung nút hành động "Tiếp Tục Mua Sắm" đóng modal mượt mà.
+
+### 3. Đồng Bộ Tồn Kho Thời Gian Thực (Real-Time Stock Sync)
+- Nâng cấp `CartDrawer.tsx`: Bắt buộc đăng nhập trước khi tạo đơn (tự mở `AuthModal` nếu chưa đăng nhập), có spinner loading và cảnh báo lỗi tồn kho trực quan.
+- Tích hợp custom event `cfc_order_completed` tự động kích hoạt `loadProducts()` trên `HomePage` và trang Admin CRUD để badge *"Còn X chiếc"* giảm ngay lập tức sau khi mua hàng.
+
+
