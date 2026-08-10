@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CfcShop.Api.Data;
@@ -59,6 +60,7 @@ public class CategoriesController : ControllerBase
 
     // POST: api/categories
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CategoryDto>> CreateCategory([FromBody] CreateCategoryDto dto)
     {
         if (!ModelState.IsValid)
@@ -87,6 +89,7 @@ public class CategoriesController : ControllerBase
 
     // PUT: api/categories/5
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryDto dto)
     {
         if (!ModelState.IsValid)
@@ -110,6 +113,7 @@ public class CategoriesController : ControllerBase
 
     // DELETE: api/categories/5
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteCategory(int id)
     {
         var category = await _context.Categories

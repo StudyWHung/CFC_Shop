@@ -96,6 +96,28 @@ public class AppDbContext : DbContext
             new Role { RoleId = 2, RoleName = "User" }
         );
 
+        // Seed Data: Users
+        modelBuilder.Entity<User>().HasData(
+            new User
+            {
+                UserId = 1,
+                Email = "admin@cfcshop.com",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
+                FullName = "System Administrator",
+                RoleId = 1,
+                CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new User
+            {
+                UserId = 2,
+                Email = "user@cfcshop.com",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("User@123"),
+                FullName = "Demo User",
+                RoleId = 2,
+                CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            }
+        );
+
         // Seed Data: Sample Categories
         modelBuilder.Entity<Category>().HasData(
             new Category { CategoryId = 1, CategoryName = "Home & Away Kits", Description = "Official Chelsea FC Match Kits and Jerseys" },
