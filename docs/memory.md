@@ -87,15 +87,17 @@
   - Được hiển thị mục "Trang Quản Trị CRUD" bên trong Dropdown Avatar khi đăng nhập với tài khoản Admin.
   - Toàn quyền truy cập và thao tác Thêm / Sửa / Xóa tại `/admin/products`.
 
-### 3. Tinh Gọn Giao Diện & Tắt Dev Indicator
-- Dọn dẹp triệt để các nút CRUD rải rác: xóa nút CRUD giữa Navbar, xóa nút CRUD trên Hero Banner, xóa cột CRUD ở Footer.
-- Xóa bỏ dòng chữ thông tin công nghệ framework ở chân Footer để giao diện thuần E-Commerce.
-- Xóa bỏ khối nút "Thử Nhanh Tài Khoản Mẫu (1-Click Test)" trong Modal Đăng nhập (`AuthModal.tsx`).
-- Tắt hoàn toàn nút tròn đen "N" (Next.js Dev Indicator) qua `next.config.ts` và `globals.css` để góc màn hình sạch sẽ.
-- Toàn bộ dự án biên dịch thành công `npm run build` với 0 lỗi.
+## [2026-08-10] - Nâng Cấp Logic Nhập & Preview Hình Ảnh Trong Form CRUD
+### 1. Chuẩn Hóa Ô Nhập Đường Dẫn Ảnh (`CrudProductModal.tsx`)
+- Đổi kiểu ô nhập từ `type="url"` sang `type="text"` nhằm loại bỏ hoàn toàn lỗi HTML5 validation *"Please enter a URL"* khi người dùng nhập đường dẫn nội bộ (relative path).
+- Xây dựng hàm tự động chuẩn hóa (`normalizeImageUrl`):
+  - Nhập URL online (`https://...` hoặc `http://...`): Giữ nguyên.
+  - Nhập đường dẫn tương đối (`/images/products/...`): Giữ nguyên.
+  - Nhập chỉ tên file (`away-kit.jpg` hoặc `images/products/...`): Tự động thêm tiền tố `/images/products/`.
+  - Để trống: Tự động gán ảnh mặc định `/images/products/home-kit.jpg`.
 
-
-
-
-
+### 2. Bổ Sung Khung Xem Trước (Live Image Preview) & Nút Chọn Nhanh (Presets)
+- Hiển thị ô ảnh xem trước (Live Preview Thumbnail) thời gian thực ngay bên cạnh ô nhập để quản trị viên kiểm tra trực quan ảnh trước khi lưu.
+- Bổ sung thanh 5 nút chọn nhanh ảnh mẫu có sẵn (`Áo Sân Nhà`, `Áo Sân Khách`, `Áo Khoác Anthem`, `Khăn Quàng`, `Cốc Sứ`).
+- Kiểm thử thành công `npm run build` với 0 lỗi và xác minh giao diện trực tiếp trên trình duyệt.
 

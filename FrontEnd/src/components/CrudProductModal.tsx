@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, Package, Tag, DollarSign, Image as ImageIcon, Layers, FileText, Loader2, ChevronDown } from "lucide-react";
+import Image from "next/image";
+import { X, Package, Tag, DollarSign, Image as ImageIcon, Layers, FileText, Loader2, ChevronDown, Sparkles } from "lucide-react";
 import { Product, Category, CreateProductInput, UpdateProductInput } from "@/types";
 
 interface CrudProductModalProps {
@@ -11,6 +12,15 @@ interface CrudProductModalProps {
   editingProduct?: Product | null;
   onSubmit: (data: CreateProductInput | UpdateProductInput) => Promise<void>;
 }
+
+// Danh sách ảnh mẫu Chelsea có sẵn trong thư mục public/images/products/
+const PRESET_IMAGES = [
+  { name: "Áo Sân Nhà", path: "/images/products/home-kit.jpg" },
+  { name: "Áo Sân Khách", path: "/images/products/away-kit.jpg" },
+  { name: "Áo Khoác Anthem", path: "/images/products/anthem-jacket.jpg" },
+  { name: "Khăn Quàng", path: "/images/products/chelsea-scarf.jpg" },
+  { name: "Cốc Sứ", path: "/images/products/crest-mug.jpg" },
+];
 
 export const CrudProductModal: React.FC<CrudProductModalProps> = ({
   isOpen,
@@ -28,6 +38,26 @@ export const CrudProductModal: React.FC<CrudProductModalProps> = ({
   const [categoryId, setCategoryId] = useState<number>(1);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imagePreviewError, setImagePreviewError] = useState(false);
+
+  // Tự động chuẩn hóa đường dẫn ảnh (hỗ trợ cả link online, relative path, hoặc chỉ tên file)
+  const normalizeImageUrl = (input: string): string => {
+    const trimmed = input.trim();
+    if (!trimmed) return "/images/products/home-kit.jpg";
+    if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+      return trimmed;
+    }
+    if (trimmed.startsWith("/")) {
+      return trimmed;
+    }
+    if (trimmed.startsWith("images/products/")) {
+      return `/${trimmed}`;
+    }
+    return `/images/products/${trimmed}`;
+  };
+
+  // Preview URL tính toán trực tiếp
+  const computedPreviewUrl = imageUrl.trim() ? normalizeImageUrl(imageUrl) : "/images/products/home-kit.jpg";
 
   // Khi modal mở lên, nếu đang chỉnh sửa thì điền sẵn dữ liệu cũ
   useEffect(() => {
@@ -46,10 +76,11 @@ export const CrudProductModal: React.FC<CrudProductModalProps> = ({
       setDescription("");
       setPrice("");
       setStockQuantity("");
-      setImageUrl("https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800");
+      setImageUrl("/images/products/home-kit.jpg");
       setCategoryId(categories[0]?.categoryId ?? 1);
     }
     setErrorMsg(null);
+    setImagePreviewError(false);
   }, [editingProduct, categories, isOpen]);
 
   if (!isOpen) return null;
@@ -78,6 +109,8 @@ export const CrudProductModal: React.FC<CrudProductModalProps> = ({
       return;
     }
 
+    const finalImageUrl = normalizeImageUrl(imageUrl);
+
     setIsSubmitting(true);
     try {
       await onSubmit({
@@ -86,7 +119,7 @@ export const CrudProductModal: React.FC<CrudProductModalProps> = ({
         description: description.trim(),
         price: numPrice,
         stockQuantity: numStock,
-        imageUrl: imageUrl.trim(),
+        imageUrl: finalImageUrl,
         categoryId: Number(categoryId),
       });
       onClose();
@@ -131,7 +164,7 @@ export const CrudProductModal: React.FC<CrudProductModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-white/10 text-gray-300 hover:text-white"
+            className="p-1.5 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -164,7 +197,7 @@ export const CrudProductModal: React.FC<CrudProductModalProps> = ({
               </div>
             </div>
 
-            {/* DROPDOWN 5: Chọn Danh Mục */}
+            {/* DROPDOWN: Chọn Danh Mục */}
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">
                 Danh Mục Sản Phẩm (Dropdown) <span className="text-red-500">*</span>
@@ -240,20 +273,80 @@ export const CrudProductModal: React.FC<CrudProductModalProps> = ({
             </div>
           </div>
 
-          {/* Image URL */}
-          <div>
-            <label className="block text-xs font-bold text-gray-700 mb-1">
-              Đường Dẫn Ảnh (Image URL)
-            </label>
-            <div className="relative">
-              <input
-                type="url"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="https://images.unsplash.com/..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#034694]/20 focus:border-[#034694]"
-              />
-              <ImageIcon className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+          {/* Enhanced Image URL with Live Preview & Quick Presets */}
+          <div className="p-4 bg-gray-50/80 rounded-2xl border border-gray-200/80 space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-gray-700">
+                Đường Dẫn Ảnh (Image URL / File Path)
+              </label>
+              <span className="text-[11px] text-gray-400 font-normal">
+                Hỗ trợ link Online (https://...) hoặc file cục bộ (/images/...)
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {/* Image Preview Thumbnail */}
+              <div className="relative w-14 h-14 rounded-xl bg-white border-2 border-dashed border-gray-300 overflow-hidden flex-shrink-0 flex items-center justify-center shadow-sm">
+                {!imagePreviewError ? (
+                  <Image
+                    src={computedPreviewUrl}
+                    alt="Preview"
+                    fill
+                    className="object-cover"
+                    onError={() => setImagePreviewError(true)}
+                    unoptimized={computedPreviewUrl.startsWith("http")}
+                  />
+                ) : (
+                  <ImageIcon className="w-6 h-6 text-gray-300" />
+                )}
+              </div>
+
+              {/* Input Field (type="text" for maximum flexibility) */}
+              <div className="flex-1">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={imageUrl}
+                    onChange={(e) => {
+                      setImageUrl(e.target.value);
+                      setImagePreviewError(false);
+                    }}
+                    placeholder="VD: /images/products/cfc-hat.jpg hoặc cfc-hat.jpg"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#034694]/20 focus:border-[#034694] bg-white font-mono text-xs"
+                  />
+                  <ImageIcon className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Presets Badge Buttons */}
+            <div className="pt-1">
+              <div className="flex items-center gap-1.5 mb-1.5 text-[11px] font-semibold text-gray-500">
+                <Sparkles className="w-3.5 h-3.5 text-[#dba111]" />
+                <span>Hoặc chọn nhanh ảnh mẫu có sẵn:</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {PRESET_IMAGES.map((preset) => {
+                  const isSelected = imageUrl === preset.path;
+                  return (
+                    <button
+                      key={preset.path}
+                      type="button"
+                      onClick={() => {
+                        setImageUrl(preset.path);
+                        setImagePreviewError(false);
+                      }}
+                      className={`text-[11px] px-2.5 py-1 rounded-lg font-medium transition-all ${
+                        isSelected
+                          ? "bg-[#034694] text-white shadow-sm font-bold"
+                          : "bg-white text-gray-600 border border-gray-200 hover:border-[#034694]/50 hover:bg-blue-50/50"
+                      }`}
+                    >
+                      {preset.name}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
