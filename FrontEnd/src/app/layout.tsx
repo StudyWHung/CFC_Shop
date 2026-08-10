@@ -9,7 +9,8 @@ export const metadata: Metadata = {
   title: "Chelsea FC Fan Store - Pride of London | Official Kits & Merch",
   description: "Cửa hàng áo đấu, đồ tập luyện và phụ kiện Chelsea FC chính hãng hàng đầu tại Việt Nam.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/images/chelsea-logo.svg",
+    apple: "/images/chelsea-logo.svg",
   },
 };
 

@@ -35,7 +35,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (storedToken && storedUser) {
           setToken(storedToken);
           setUser(JSON.parse(storedUser));
-          
+
           // Thử lấy profile mới nhất từ server để kiểm tra token còn sống không
           try {
             const freshProfile = await getProfileApi();
@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
     setUser(userData);
 
-    // Lưu vào LocalStorage
+    // Lưu vào Local Storage
     localStorage.setItem("cfc_token", authData.token);
     localStorage.setItem("cfc_user", JSON.stringify(userData));
   };
