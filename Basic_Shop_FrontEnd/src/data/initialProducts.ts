@@ -1,22 +1,34 @@
-import { Category, Product } from "@/types";
+import { Category, Product, RoleFilterOption } from "@/types";
 
 /**
  * =============================================================================
- * DỮ LIỆU DANH MỤC MÔ HÌNH (CATEGORIES)
- * - Dùng để render các nút bộ lọc trên trang chủ
+ * DỮ LIỆU DANH MỤC BỘ SƯU TẬP (CATEGORIES)
+ * - Phân loại theo thời kỳ/mốc lịch sử: Tất cả, Đội hình hiện tại, Huyền thoại
  * =============================================================================
  */
 export const CATEGORIES: Category[] = [
-  { id: "cat-0", name: "Tất Cả Mô Hình", slug: "all", description: "Toàn bộ bộ sưu tập figure Chelsea FC" },
+  { id: "cat-0", name: "Tất Cả Bộ Sưu Tập", slug: "all", description: "Toàn bộ bộ sưu tập figure Chelsea FC" },
   { id: "cat-1", name: "Đội Hình Hiện Tại", slug: "current-squad", description: "Các ngôi sao đang thi đấu mùa giải 2024/2025" },
   { id: "cat-2", name: "Huyền Thoại (Legends)", slug: "legends", description: "Các biểu tượng vĩ đại trong lịch sử The Blues" },
-  { id: "cat-3", name: "Thủ Môn (Keepers)", slug: "goalkeepers", description: "Những người gác đền huyền thoại" },
+];
+
+/**
+ * =============================================================================
+ * DỮ LIỆU TUYẾN THI ĐẤU (PLAYER ROLES / POSITIONS)
+ * - Phân loại theo vai trò chuyên môn trên sân bóng: FW, MF, DF, GK
+ * =============================================================================
+ */
+export const PLAYER_ROLES: RoleFilterOption[] = [
+  { id: "role-all", name: "Tất Cả Vị Trí", role: "all" },
+  { id: "role-fw", name: "Tiền Đạo (FW)", role: "FW" },
+  { id: "role-mf", name: "Tiền Vệ (MF)", role: "MF" },
+  { id: "role-df", name: "Hậu Vệ (DF)", role: "DF" },
+  { id: "role-gk", name: "Thủ Môn (GK)", role: "GK" },
 ];
 
 /**
  * =============================================================================
  * DỮ LIỆU SẢN PHẨM MẪU BAN ĐẦU (INITIAL PRODUCTS) - SỬ DỤNG ẢNH CỤC BỘ (LOCAL ASSETS)
- * - Các ảnh được lưu trữ trực tiếp trong thư mục: `public/images/figures/`
  * =============================================================================
  */
 export const INITIAL_PRODUCTS: Product[] = [
@@ -26,6 +38,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     playerName: "Cole Palmer",
     playerNumber: 20,
     position: "Tiền vệ tấn công / Cánh phải",
+    role: "MF",
     category: "current-squad",
     price: 650000,
     stock: 15,
@@ -41,6 +54,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     playerName: "Eden Hazard",
     playerNumber: 10,
     position: "Tiền đạo cánh trái",
+    role: "FW",
     category: "legends",
     price: 890000,
     stock: 8,
@@ -56,6 +70,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     playerName: "Didier Drogba",
     playerNumber: 11,
     position: "Tiền đạo cắm",
+    role: "FW",
     category: "legends",
     price: 1200000,
     stock: 5,
@@ -71,6 +86,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     playerName: "Frank Lampard",
     playerNumber: 8,
     position: "Tiền vệ trung tâm",
+    role: "MF",
     category: "legends",
     price: 950000,
     stock: 10,
@@ -86,6 +102,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     playerName: "Enzo Fernández",
     playerNumber: 8,
     position: "Tiền vệ kiến thiết",
+    role: "MF",
     category: "current-squad",
     price: 580000,
     stock: 20,
@@ -101,6 +118,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     playerName: "Moises Caicedo",
     playerNumber: 25,
     position: "Tiền vệ phòng ngự",
+    role: "MF",
     category: "current-squad",
     price: 550000,
     stock: 12,
@@ -115,8 +133,9 @@ export const INITIAL_PRODUCTS: Product[] = [
     name: "Mô hình Thủ Môn Petr Cech - Headguard Legend (18cm)",
     playerName: "Petr Cech",
     playerNumber: 1,
-    position: "Thủ môn",
-    category: "goalkeepers",
+    position: "Thủ môn huyền thoại",
+    role: "GK",
+    category: "legends",
     price: 790000,
     stock: 7,
     imageUrl: "/images/figures/cech.png",
@@ -131,6 +150,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     playerName: "John Terry",
     playerNumber: 26,
     position: "Trung vệ / Đội trưởng",
+    role: "DF",
     category: "legends",
     price: 890000,
     stock: 9,

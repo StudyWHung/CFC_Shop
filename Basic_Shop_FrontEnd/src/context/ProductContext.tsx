@@ -51,18 +51,48 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       const savedData = localStorage.getItem(STORAGE_KEY);
       if (savedData) {
         const parsed: Product[] = JSON.parse(savedData);
-        // Tự động thay thế các link ảnh cũ (unsplash) bằng ảnh figure local chất lượng cao
+        // Tự động chuẩn hóa link ảnh, phân loại category và gán role cho dữ liệu cũ
         const updated = parsed.map((p) => {
           const defaultItem = INITIAL_PRODUCTS.find((init) => init.id === p.id);
-          if (defaultItem && p.imageUrl && p.imageUrl.includes("unsplash.com")) {
-            return { ...p, imageUrl: defaultItem.imageUrl };
+          
+          let role = p.role;
+          let category = p.category;
+
+          // Nếu là dữ liệu cũ chưa có role hoặc category là goalkeepers
+          if (category === "goalkeepers") {
+            category = "legends";
+            role = "GK";
           }
-          return p;
+
+          if (!role) {
+            if (defaultItem?.role) {
+              role = defaultItem.role;
+            } else {
+              // Đoán role từ position
+              const pos = (p.position || "").toLowerCase();
+              if (pos.includes("thủ môn") || pos.includes("keeper")) role = "GK";
+              else if (pos.includes("hậu vệ") || pos.includes("trung vệ") || pos.includes("defender")) role = "DF";
+              else if (pos.includes("tiền đạo") || pos.includes("forward") || pos.includes("wing")) role = "FW";
+              else role = "MF";
+            }
+          }
+
+          const imageUrl =
+            defaultItem && p.imageUrl && p.imageUrl.includes("unsplash.com")
+              ? defaultItem.imageUrl
+              : p.imageUrl;
+
+          return {
+            ...p,
+            role,
+            category,
+            imageUrl,
+          };
         });
         setProducts(updated);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
       } else {
-        // Nếu lần đầu truy cập v2, khởi tạo với 8 mô hình figure cục bộ mới nhất
+        // Nếu lần đầu truy cập, khởi tạo với 8 mô hình figure mẫu chuẩn
         setProducts(INITIAL_PRODUCTS);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_PRODUCTS));
       }
@@ -72,6 +102,7 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
+
   }, []);
 
   // [HOOK 2: useEffect] - Chạy mỗi khi danh sách `products` thay đổi (sau khi đã nạp xong lần đầu)

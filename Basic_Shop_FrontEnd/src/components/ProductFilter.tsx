@@ -1,22 +1,19 @@
 "use client";
 
 import React from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
-import { CATEGORIES } from "@/data/initialProducts";
+import { Search, SlidersHorizontal, X, Layers, Shield } from "lucide-react";
+import { CATEGORIES, PLAYER_ROLES } from "@/data/initialProducts";
+import { PlayerRole } from "@/types";
 
 /**
  * =============================================================================
- * COMPONENT: PRODUCT FILTER (THANH TÌM KIẾM & BỘ LỌC DANH MỤC)
+ * COMPONENT: PRODUCT FILTER (THANH TÌM KIẾM & 2 TẦNG BỘ LỌC CHUYÊN SÂU)
  * 
  * 1. MỤC ĐÍCH:
- *    - Cho phép khách hàng tìm kiếm theo tên mô hình hoặc tên cầu thủ.
- *    - Bấm chọn danh mục (Pill buttons): Tất cả, Đội hình hiện tại, Huyền thoại...
- *    - Sắp xếp theo giá (Tăng dần / Giảm dần) hoặc Mới nhất.
- * 
- * 2. CÁCH KẾT NỐI & TRUYỀN NHẬN DỮ LIỆU (Props):
- *    - Nhận `searchTerm`, `selectedCategory`, `sortBy` và các hàm setter từ `app/page.tsx`.
- *    - Khi người dùng gõ vào ô tìm kiếm hoặc bấm đổi danh mục -> Gọi các hàm setter tương ứng.
- *    - `app/page.tsx` sẽ nhận được state mới và dùng `useMemo` để tính toán lại danh sách hiển thị.
+ *    - Tìm kiếm theo tên mô hình, tên cầu thủ.
+ *    - Lọc Tầng 1: Bộ sưu tập (`category`: Tất cả / Đội hình hiện tại / Huyền thoại).
+ *    - Lọc Tầng 2: Vị trí thi đấu (`role`: Tất cả / FW / MF / DF / GK).
+ *    - Sắp xếp: Giá, Nổi bật, Đánh giá sao.
  * =============================================================================
  */
 
@@ -25,6 +22,8 @@ interface ProductFilterProps {
   setSearchTerm: (value: string) => void;
   selectedCategory: string;
   setSelectedCategory: (slug: string) => void;
+  selectedRole: PlayerRole | "all";
+  setSelectedRole: (role: PlayerRole | "all") => void;
   sortBy: string;
   setSortBy: (value: string) => void;
   totalResults: number;
@@ -35,6 +34,8 @@ export default function ProductFilter({
   setSearchTerm,
   selectedCategory,
   setSelectedCategory,
+  selectedRole,
+  setSelectedRole,
   sortBy,
   setSortBy,
   totalResults,
@@ -55,7 +56,6 @@ export default function ProductFilter({
             placeholder="Tìm theo tên mô hình, tên cầu thủ (Cole Palmer, Hazard, Drogba...)"
             className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#034694] focus:ring-2 focus:ring-blue-100 transition-all"
           />
-          {/* Nút xóa nhanh từ khóa tìm kiếm */}
           {searchTerm && (
             <button
               onClick={() => setSearchTerm("")}
@@ -86,30 +86,64 @@ export default function ProductFilter({
 
       </div>
 
-      {/* DÒNG 2: NÚT CHỌN DANH MỤC (PILL BUTTONS) */}
-      <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
-        <div className="flex flex-wrap items-center gap-2">
-          {CATEGORIES.map((cat) => {
-            const isActive = selectedCategory === cat.slug;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.slug)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  isActive
-                    ? "bg-[#034694] text-white shadow-md shadow-blue-900/30 scale-105"
-                    : "bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                {cat.name}
-              </button>
-            );
-          })}
+      {/* DÒNG 2: BỘ LỌC TẦNG 1 (BỘ SƯU TẬP / CATEGORY) */}
+      <div className="pt-2 border-t border-slate-100 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1">
+              <Layers className="w-3.5 h-3.5 text-[#034694]" />
+              <span>Bộ Sưu Tập:</span>
+            </span>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {CATEGORIES.map((cat) => {
+                const isActive = selectedCategory === cat.slug;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.slug)}
+                    className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                      isActive
+                        ? "bg-[#034694] text-white shadow-md shadow-blue-900/30 scale-105"
+                        : "bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900"
+                    }`}
+                  >
+                    {cat.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Đếm số lượng */}
+          <div className="text-xs text-slate-500 font-medium self-end sm:self-auto">
+            Tìm thấy <span className="font-bold text-[#034694]">{totalResults}</span> mô hình
+          </div>
         </div>
 
-        {/* Số lượng kết quả hiển thị */}
-        <div className="text-xs text-slate-500 font-medium">
-          Tìm thấy <span className="font-bold text-[#034694]">{totalResults}</span> mô hình
+        {/* DÒNG 3: BỘ LỌC TẦNG 2 (VỊ TRÍ THI ĐẤU / ROLE) */}
+        <div className="flex items-center gap-2 pt-1 border-t border-slate-50 flex-wrap">
+          <span className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1">
+            <Shield className="w-3.5 h-3.5 text-amber-500" />
+            <span>Vị Trí Thi Đấu:</span>
+          </span>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {PLAYER_ROLES.map((item) => {
+              const isActive = selectedRole === item.role;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setSelectedRole(item.role)}
+                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                    isActive
+                      ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 scale-105"
+                      : "bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  {item.name}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 

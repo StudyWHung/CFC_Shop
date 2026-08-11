@@ -5,6 +5,7 @@ import { Sparkles, Trophy, Flame, Shield, ArrowDown } from "lucide-react";
 import { useProducts } from "@/context/ProductContext";
 import ProductCard from "@/components/ProductCard";
 import ProductFilter from "@/components/ProductFilter";
+import { PlayerRole } from "@/types";
 
 /**
  * =============================================================================
@@ -13,17 +14,8 @@ import ProductFilter from "@/components/ProductFilter";
  * 1. MỤC ĐÍCH:
  *    - Là trang mặt tiền của cửa hàng (Storefront).
  *    - Hiển thị Hero Banner giới thiệu bộ sưu tập Figure độc quyền.
- *    - Cung cấp thanh tìm kiếm, bộ lọc theo danh mục và sắp xếp theo giá.
+ *    - Cung cấp thanh tìm kiếm, bộ lọc theo Bộ sưu tập (Category) và Vị trí thi đấu (Role: FW/MF/DF/GK).
  *    - Hiển thị danh sách sản phẩm dạng Grid sắc nét, tương thích mọi thiết bị.
- * 
- * 2. CÁC KHÁI NIỆM REACT HOOKS ĐƯỢC ỨNG DỤNG:
- *    - `useProducts()`: Lấy danh sách sản phẩm từ `ProductContext`.
- *    - `useState`: Quản lý 3 trạng thái của bộ lọc:
- *      + `searchTerm`: Từ khóa khách gõ vào ô tìm kiếm.
- *      + `selectedCategory`: Danh mục khách đang bấm chọn ("all", "current-squad", "legends"...).
- *      + `sortBy`: Thứ tự sắp xếp ("featured", "price-asc", "price-desc", "rating").
- *    - `useMemo`: Tối ưu hóa tính toán lọc và sắp xếp. Khi người dùng gõ phím,
- *      chỉ tính toán lọc lại mảng mà không làm render lại các phần không liên quan.
  * =============================================================================
  */
 export default function HomePage() {
@@ -33,26 +25,30 @@ export default function HomePage() {
   // [HOOK 1: useState] - Quản lý từ khóa tìm kiếm
   const [searchTerm, setSearchTerm] = useState<string>("");
   
-  // [HOOK 1: useState] - Quản lý danh mục đang được lọc (Mặc định là "all" - Tất cả)
+  // [HOOK 1: useState] - Quản lý bộ sưu tập đang được lọc (Mặc định là "all" - Tất cả)
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   
+  // [HOOK 1: useState] - Quản lý vị trí thi đấu đang được lọc (Mặc định là "all" - Tất cả vị trí)
+  const [selectedRole, setSelectedRole] = useState<PlayerRole | "all">("all");
+
   // [HOOK 1: useState] - Quản lý cách thức sắp xếp (Mặc định là "featured" - Nổi bật)
   const [sortBy, setSortBy] = useState<string>("featured");
 
   // [HOOK 2: useMemo] - Bộ lọc và sắp xếp sản phẩm thông minh
-  // Logic:
-  // 1. Lọc theo danh mục: Nếu khác "all" thì so sánh `product.category === selectedCategory`.
-  // 2. Lọc theo từ khóa: Tìm kiếm không phân biệt hoa thường trong Tên mô hình hoặc Tên cầu thủ.
-  // 3. Sắp xếp theo giá tăng/giảm hoặc điểm đánh giá sao.
   const filteredAndSortedProducts = useMemo(() => {
     let result = [...products];
 
-    // 1. Lọc theo Danh mục
+    // 1. Lọc theo Bộ sưu tập (Category)
     if (selectedCategory !== "all") {
       result = result.filter((p) => p.category === selectedCategory);
     }
 
-    // 2. Lọc theo Từ khóa tìm kiếm
+    // 2. Lọc theo Vị trí thi đấu (Role: FW, MF, DF, GK)
+    if (selectedRole !== "all") {
+      result = result.filter((p) => p.role === selectedRole);
+    }
+
+    // 3. Lọc theo Từ khóa tìm kiếm
     if (searchTerm.trim()) {
       const lowerSearch = searchTerm.toLowerCase().trim();
       result = result.filter(
@@ -63,7 +59,7 @@ export default function HomePage() {
       );
     }
 
-    // 3. Sắp xếp kết quả
+    // 4. Sắp xếp kết quả
     if (sortBy === "price-asc") {
       result.sort((a, b) => a.price - b.price); // Giá tăng dần
     } else if (sortBy === "price-desc") {
@@ -76,7 +72,8 @@ export default function HomePage() {
     }
 
     return result;
-  }, [products, searchTerm, selectedCategory, sortBy]);
+  }, [products, searchTerm, selectedCategory, selectedRole, sortBy]);
+
 
   return (
     <div className="space-y-10 pb-16">
@@ -184,6 +181,8 @@ export default function HomePage() {
           setSearchTerm={setSearchTerm}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
+          selectedRole={selectedRole}
+          setSelectedRole={setSelectedRole}
           sortBy={sortBy}
           setSortBy={setSortBy}
           totalResults={filteredAndSortedProducts.length}
@@ -207,6 +206,7 @@ export default function HomePage() {
               onClick={() => {
                 setSearchTerm("");
                 setSelectedCategory("all");
+                setSelectedRole("all");
               }}
               className="px-4 py-2 bg-[#034694] text-white rounded-xl text-xs font-bold hover:bg-[#023470] transition cursor-pointer"
             >
@@ -214,6 +214,7 @@ export default function HomePage() {
             </button>
           </div>
         ) : (
+
           /* LƯỚI SẢN PHẨM RESPONSIVE (Grid 4 cột trên Desktop, 2 cột trên Tablet, 1 cột trên Mobile) */
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredAndSortedProducts.map((product) => (

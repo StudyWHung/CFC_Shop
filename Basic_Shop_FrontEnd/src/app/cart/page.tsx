@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useProducts } from "@/context/ProductContext";
+import { useOrders } from "@/context/OrderContext";
 
 /**
  * =============================================================================
@@ -25,24 +26,32 @@ import { useProducts } from "@/context/ProductContext";
  *    - Xem toàn bộ danh sách mô hình figure đã chọn mua.
  *    - Tùy chỉnh số lượng mua cho từng mô hình hoặc xóa món.
  *    - Điền thông tin giao hàng và chọn phương thức thanh toán giả lập.
- *    - Khi bấm "Đặt Hàng Ngay" -> Tạo mã đơn hàng mẫu và hiển thị thông báo thành công.
+ *    - Khi bấm "Đặt Hàng Ngay" -> Lưu đơn hàng vào OrderContext và hiển thị thông báo thành công.
  * 
  * 2. HOOKS SỬ DỤNG:
  *    - `useCart()`: Lấy `cartItems`, `totalPrice`, `updateQuantity`, `removeFromCart`, `clearCart`.
  *    - `useProducts()`: Lấy `deductStock` để tự động trừ số lượng tồn kho.
+ *    - `useOrders()`: Lấy `addOrder` để ghi nhận giao dịch vào hệ thống phân tích.
  *    - `useState`: Quản lý thông tin form giao hàng (`customerInfo`) và modal thành công (`orderSuccessData`).
  * =============================================================================
  */
 export default function CartPage() {
   const { cartItems, totalPrice, updateQuantity, removeFromCart, clearCart } = useCart();
   const { deductStock } = useProducts();
+  const { addOrder } = useOrders();
 
   // [HOOK: useState] - Quản lý form thông tin khách hàng đặt hàng
-  const [customerInfo, setCustomerInfo] = useState({
+  const [customerInfo, setCustomerInfo] = useState<{
+    name: string;
+    phone: string;
+    address: string;
+    paymentMethod: "cod" | "qr" | "card";
+    note: string;
+  }>({
     name: "",
     phone: "",
     address: "",
-    paymentMethod: "cod", // "cod" | "qr" | "card"
+    paymentMethod: "cod",
     note: "",
   });
 
@@ -62,9 +71,6 @@ export default function CartPage() {
 
     if (cartItems.length === 0) return;
 
-    // Sinh mã đơn hàng ngẫu nhiên
-    const orderId = `CFC-ORD-${Math.floor(100000 + Math.random() * 900000)}`;
-
     // Trừ số lượng tồn kho của các sản phẩm vừa mua
     deductStock(
       cartItems.map((item) => ({
@@ -73,15 +79,28 @@ export default function CartPage() {
       }))
     );
 
+    // Thêm đơn hàng vào OrderContext để biểu đồ Admin cập nhật tự động
+    const createdOrderId = addOrder({
+      customerName: customerInfo.name,
+      phoneNumber: customerInfo.phone,
+      address: customerInfo.address,
+      items: [...cartItems],
+      totalAmount: finalTotal,
+      paymentMethod: customerInfo.paymentMethod,
+      note: customerInfo.note,
+      status: "completed",
+    });
+
     // Lưu thông tin để hiển thị popup chúc mừng
     setOrderSuccessData({
-      orderId,
+      orderId: createdOrderId,
       totalAmount: finalTotal,
     });
 
     // Làm rỗng giỏ hàng sau khi đặt thành công
     clearCart();
   };
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">

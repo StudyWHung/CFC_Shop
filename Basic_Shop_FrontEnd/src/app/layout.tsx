@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ProductProvider } from "@/context/ProductContext";
 import { CartProvider } from "@/context/CartContext";
+import { OrderProvider } from "@/context/OrderContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
@@ -20,9 +21,10 @@ export const metadata: Metadata = {
  * 
  * 1. MỤC ĐÍCH:
  *    - Là khung sườn chung bao bọc toàn bộ các trang (`/`, `/cart`, `/admin`).
- *    - Bọc 2 Context Providers:
+ *    - Bọc 3 Context Providers:
  *      + `<ProductProvider>`: Cung cấp kho dữ liệu sản phẩm & CRUD cho toàn bộ cây Component.
  *      + `<CartProvider>`: Cung cấp giỏ hàng cho toàn bộ cây Component.
+ *      + `<OrderProvider>`: Cung cấp lịch sử đơn hàng & phân tích cho Dashboard.
  *    - Đặt sẵn `Navbar` ở trên, `Footer` ở dưới, và `CartDrawer` sẵn sàng trượt ra khi có yêu cầu.
  * =============================================================================
  */
@@ -37,22 +39,25 @@ export default function RootLayout({
         {/* Bọc Provider để toàn bộ trang bên trong đều truy cập được State */}
         <ProductProvider>
           <CartProvider>
-            {/* Thanh điều hướng cố định phía trên */}
-            <Navbar />
+            <OrderProvider>
+              {/* Thanh điều hướng cố định phía trên */}
+              <Navbar />
 
-            {/* Nội dung thay đổi tùy theo từng trang (page.tsx) */}
-            <main className="flex-1">
-              {children}
-            </main>
+              {/* Nội dung thay đổi tùy theo từng trang (page.tsx) */}
+              <main className="flex-1">
+                {children}
+              </main>
 
-            {/* Ngăn kéo giỏ hàng xem nhanh bên phải */}
-            <CartDrawer />
+              {/* Ngăn kéo giỏ hàng xem nhanh bên phải */}
+              <CartDrawer />
 
-            {/* Chân trang */}
-            <Footer />
+              {/* Chân trang */}
+              <Footer />
+            </OrderProvider>
           </CartProvider>
         </ProductProvider>
       </body>
     </html>
   );
 }
+
