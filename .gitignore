@@ -23,7 +23,9 @@ Desktop.ini
 $RECYCLE.BIN/
 .DS_Store
 
-## Node / FrontEnd (cho tương lai khi dùng React/Vue/Vite)
+## Node / FrontEnd (cho tương lai khi dùng React/Vue/Vite/Next.js)
 node_modules/
 dist/
 .npm
+.next/
+out/
