@@ -4,11 +4,14 @@ import React, { useState, useMemo } from "react";
 import {
   AreaChart,
   Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Cell,
 } from "recharts";
 import { TrendingUp, DollarSign, ShoppingBag, Calendar as CalendarIcon } from "lucide-react";
 import { Order } from "@/types";
@@ -152,14 +155,64 @@ export default function RevenueTrendChart({ orders }: RevenueTrendChartProps) {
         </div>
       </div>
 
-      {/* KHU VỰC RENDER AREACHART */}
+      {/* KHU VỰC RENDER BIỂU ĐỒ (HỖ TRỢ CẢ SINGLE DAY LẪN MULTI DAY RANGE) */}
       <div className="h-64 sm:h-72 w-full pt-2">
         {chartData.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-slate-400 text-xs font-semibold gap-1">
             <CalendarIcon className="w-8 h-8 text-slate-300" />
             <span>Không tìm thấy giao dịch nào trong khoảng thời gian này</span>
           </div>
+        ) : chartData.length === 1 ? (
+          /* KHI CHỈ CÓ 1 MỐC NGÀY (VD: HÔM NAY) -> RENDER BARCHART CỘT ĐỨNG RÕ RÀNG */
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ top: 15, right: 10, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+              <XAxis
+                dataKey="shortDate"
+                stroke="#64748B"
+                fontSize={12}
+                fontWeight={700}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                stroke="#64748B"
+                fontSize={11}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={(value) => `${(value / 1000000).toFixed(1)}Tr`}
+              />
+              <Tooltip
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const data = payload[0].payload;
+                    return (
+                      <div className="bg-slate-900 text-white rounded-xl p-3 shadow-xl border border-slate-700 text-xs space-y-1.5">
+                        <div className="flex items-center gap-1.5 font-bold text-slate-300 border-b border-slate-800 pb-1">
+                          <CalendarIcon className="w-3.5 h-3.5 text-blue-400" />
+                          <span>Ngày: {data.date}</span>
+                        </div>
+                        <div className="flex justify-between gap-4">
+                          <span className="text-slate-400">Doanh thu:</span>
+                          <span className="font-extrabold text-[#38BDF8]">
+                            {data.revenue.toLocaleString("vi-VN")} đ
+                          </span>
+                        </div>
+                        <div className="flex justify-between gap-4">
+                          <span className="text-slate-400">Số đơn hàng:</span>
+                          <span className="font-bold text-amber-400">{data.orderCount} đơn</span>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+              <Bar dataKey="revenue" fill="#034694" radius={[12, 12, 0, 0]} barSize={50} />
+            </BarChart>
+          </ResponsiveContainer>
         ) : (
+          /* KHI CÓ NHIỀU MỐC NGÀY (7 NGÀY, 30 NGÀY, TẤT CẢ) -> RENDER AREACHART ĐƯỜNG SÓNG GRADIENT */
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <defs>

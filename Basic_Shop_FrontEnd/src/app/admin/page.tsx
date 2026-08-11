@@ -601,6 +601,7 @@ export default function AdminPage() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-slate-100 text-slate-600 text-[11px] uppercase font-extrabold tracking-wider border-b border-slate-200">
+                    <th className="py-3.5 px-3 text-center w-12">STT</th>
                     <th className="py-3.5 px-4">Mã Đơn & Ngày</th>
                     <th className="py-3.5 px-4">Khách Hàng & Địa Chỉ</th>
                     <th className="py-3.5 px-4">Mô Hình Đã Đặt</th>
@@ -613,20 +614,25 @@ export default function AdminPage() {
                 <tbody className="divide-y divide-slate-100 text-xs sm:text-sm">
                   {isOrdersLoading ? (
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-slate-400">
+                      <td colSpan={8} className="py-12 text-center text-slate-400">
                         Đang nạp danh sách đơn hàng...
                       </td>
                     </tr>
                   ) : filteredOrders.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-slate-400 font-semibold">
+                      <td colSpan={8} className="py-12 text-center text-slate-400 font-semibold">
                         Không tìm thấy đơn hàng nào phù hợp!
                       </td>
                     </tr>
                   ) : (
-                    filteredOrders.map((order) => (
+                    filteredOrders.map((order, index) => (
                       <tr key={order.id} className="hover:bg-blue-50/30 transition-colors">
                         
+                        {/* Số Thứ Tự */}
+                        <td className="py-3.5 px-3 text-center font-extrabold text-slate-400">
+                          #{index + 1}
+                        </td>
+
                         {/* Mã Đơn & Ngày */}
                         <td className="py-3.5 px-4">
                           <div className="font-mono font-black text-[#034694]">{order.id}</div>
@@ -644,6 +650,7 @@ export default function AdminPage() {
                             {order.address}
                           </div>
                         </td>
+
 
                         {/* Danh sách món */}
                         <td className="py-3.5 px-4">
