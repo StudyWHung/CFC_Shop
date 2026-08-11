@@ -76,9 +76,7 @@ self.__SERVER_FILES_MANIFEST={
       "unoptimized": false,
       "customCacheHandler": false
     },
-    "devIndicators": {
-      "position": "bottom-left"
-    },
+    "devIndicators": false,
     "onDemandEntries": {
       "maxInactiveAge": 60000,
       "pagesBufferLength": 5
