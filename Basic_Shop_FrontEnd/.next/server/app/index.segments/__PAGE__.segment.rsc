@@ -1,0 +1,19 @@
+1:"$Sreact.fragment"
+2:I[47257,["/_next/static/chunks/3fntmmi971322.js","/_next/static/chunks/3fko1uvuzvn29.js"],"ClientPageRoot"]
+3:I[52683,["/_next/static/chunks/3fntmmi971322.js","/_next/static/chunks/3fko1uvuzvn29.js","/_next/static/chunks/3yjexnc_b-s9b.js"],"default"]
+6:I[97367,["/_next/static/chunks/3fntmmi971322.js","/_next/static/chunks/3fko1uvuzvn29.js"],"OutletBoundary"]
+7:"$Sreact.suspense"
+b:I[97367,["/_next/static/chunks/3fntmmi971322.js","/_next/static/chunks/3fko1uvuzvn29.js"],"ViewportBoundary"]
+c:I[97367,["/_next/static/chunks/3fntmmi971322.js","/_next/static/chunks/3fko1uvuzvn29.js"],"MetadataBoundary"]
+d:I[27201,["/_next/static/chunks/3fntmmi971322.js","/_next/static/chunks/3fko1uvuzvn29.js"],"IconMark"]
+a:X
+0:{"buildId":"z1fkJTaNBR3OxdOpvjKue","data":[{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"Component":"$3","serverProvidedParams":{"searchParams":{},"params":{},"promises":["$@4","$@5"]}}],[["$","script","script-0",{"src":"/_next/static/chunks/3yjexnc_b-s9b.js","async":true}]],["$","$L6",null,{"children":["$","$7",null,{"name":"Next.MetadataOutlet","children":"$@8"}]}]]}],"isPartial":"$@9","staleTime":"$a","varyParams":null},{"rsc":["$","$1","h",{"children":[null,["$","$Lb",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$Lc",null,{"children":["$","$7",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"CFC Figure Store — Mô Hình Cầu Thủ Chelsea FC Chính Hãng"}],["$","meta","1",{"name":"description","content":"Cửa hàng mô hình figure đồ chơi các cầu thủ Chelsea FC: Cole Palmer, Eden Hazard, Didier Drogba, Frank Lampard..."}],["$","link","2",{"rel":"icon","href":"/images/chelsea-logo.svg"}],["$","$Ld","3",{}]]}]}]}],null]}],"isPartial":"$@e","staleTime":"$a","varyParams":null}],"isUpgradeableISRFallback":false,"a":"$@f","rootVaryParams":null,"needsRuntimeRequest":"$@10"}
+4:{}
+5:"$0:data:0:rsc:props:children:0:props:serverProvidedParams:params"
+8:null
+10:true
+a:300
+a:C
+f:0
+e:"$undefined"
+9:"$undefined"

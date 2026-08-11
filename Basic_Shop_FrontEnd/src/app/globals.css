@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+/* 
+  =============================================================================
+  CẤU HÌNH BIẾN MÀU THEME (Tailwind CSS v4)
+  - --cfc-blue: Màu xanh dương hoàng gia đặc trưng của Chelsea FC
+  - --cfc-navy: Màu xanh tím than đậm cho Header / Footer / Banner
+  - --cfc-gold: Màu vàng kim loại làm điểm nhấn (Accent) cho nút, huy hiệu, giá tiền
+  =============================================================================
+*/
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --cfc-blue: #034694;
+  --cfc-blue-hover: #023470;
+  --cfc-navy: #0a192f;
+  --cfc-gold: #dba111;
+  --cfc-gold-hover: #b8850a;
+  --cfc-accent: #e5a823;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-cfc-blue: var(--cfc-blue);
+  --color-cfc-blue-hover: var(--cfc-blue-hover);
+  --color-cfc-navy: var(--cfc-navy);
+  --color-cfc-gold: var(--cfc-gold);
+  --color-cfc-gold-hover: var(--cfc-gold-hover);
+  --color-cfc-accent: var(--cfc-accent);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+}
+
+/* Tùy chỉnh thanh cuộn trình duyệt cho đẹp mắt */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

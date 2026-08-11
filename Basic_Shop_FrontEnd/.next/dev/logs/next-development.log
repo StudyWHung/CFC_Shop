@@ -1,0 +1,18 @@
+{"timestamp":"00:00:01.560","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:00:23.151","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:12:34.890","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:12:36.094","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:12:42.665","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/data/initialProducts.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:12:42.721","source":"Server","level":"LOG","message":"✓ Compiled in 134ms"}
+{"timestamp":"00:12:42.973","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:12:51.957","source":"Server","level":"LOG","message":"✓ Compiled in 104ms"}
+{"timestamp":"00:13:00.972","source":"Server","level":"LOG","message":"✓ Compiled in 93ms"}
+{"timestamp":"00:13:24.487","source":"Server","level":"LOG","message":"✓ Compiled in 79ms"}
+{"timestamp":"00:14:12.418","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:14:16.193","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:15:25.485","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/context/ProductContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:15:25.556","source":"Server","level":"LOG","message":"✓ Compiled in 102ms"}
+{"timestamp":"00:15:25.833","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:15:36.645","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/context/CartContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:15:36.715","source":"Server","level":"LOG","message":"✓ Compiled in 104ms"}
+{"timestamp":"00:15:36.961","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}

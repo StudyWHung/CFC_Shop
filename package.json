@@ -6,6 +6,7 @@
     "dev": "npm --prefix FrontEnd run dev",
     "build": "npm --prefix FrontEnd run build",
     "start": "npm --prefix FrontEnd run start",
-    "backend": "dotnet run --project BackEnd"
+    "backend": "dotnet run --project BackEnd",
+    "basic-shop": "npm --prefix Basic_Shop_FrontEnd run dev"
   }
 }
